@@ -1,0 +1,13 @@
+#macro( checkList $somelist )
+  #if ($somelist.size() == 0)
+    You are empty list
+  #else
+    You are NOT empty list  
+  #end  
+#end
+
+#macro( encryte $somelist )
+    #foreach ($str in $somelist)
+        $str
+    #end
+#end

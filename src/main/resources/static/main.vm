@@ -1,0 +1,6 @@
+Hi!  This $some from the $project project.
+#parse("common.vm")
+
+#checkList($somelist)
+
+#encryte($somelist)
