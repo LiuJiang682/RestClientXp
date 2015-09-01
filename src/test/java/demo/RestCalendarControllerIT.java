@@ -2,12 +2,14 @@ package demo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -39,6 +41,57 @@ public class RestCalendarControllerIT {
 			}
 			err.close();
 			System.err.println(responseErr);
+			
+			BufferedReader in = new BufferedReader(
+			        new InputStreamReader(conn.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			//print result
+			System.out.println(response.toString());
+
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetDateStringMarshall() {
+		MyCalander c = new MyCalander();
+		c.setCalender(Calendar.getInstance());
+		
+		
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			StringWriter w = new StringWriter();
+			mapper.writeValue(w, c);
+			String cs = w.toString();
+			String urlString = "http://localhost:9190/cm?date=" + cs;
+			URL url = new URL(urlString);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+			int responseCode = conn.getResponseCode();
+			System.out.println("\nSending 'GET' request to URL : " + url);
+			System.out.println("Response Code : " + responseCode);
+			
+//			BufferedReader err = new BufferedReader(
+//			        new InputStreamReader(conn.getErrorStream()));
+//			String inputLineErr;
+//			StringBuffer responseErr = new StringBuffer();
+//
+//			while ((inputLineErr = err.readLine()) != null) {
+//				responseErr.append(inputLineErr);
+//			}
+//			err.close();
+//			System.err.println(responseErr);
 			
 			BufferedReader in = new BufferedReader(
 			        new InputStreamReader(conn.getInputStream()));
